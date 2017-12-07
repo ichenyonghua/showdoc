@@ -44,7 +44,11 @@ class CatalogController extends BaseController {
             $this->message(L('no_permissions'));
             return;
         }
-
+        //禁止空目录的生成
+        if (!$cat_name) {
+            return;
+        }
+        
         $data['cat_name'] = $cat_name ;
         $data['s_number'] = $s_number ;
         $data['item_id'] = $item_id ;
@@ -132,7 +136,7 @@ class CatalogController extends BaseController {
             return;
         }
 
-        if (D("Page")->where(" cat_id = '$cat_id' ")->find()) {
+        if (D("Page")->where(" cat_id = '$cat_id' ")->find() || D("Catalog")->where(" parent_cat_id = '$cat_id' ")->find()) {
             $return['error_code'] = -1 ;
             $return['error_message'] = L('no_delete_empty_catalog') ;
             $this->sendResult($return);
